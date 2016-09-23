@@ -37,7 +37,7 @@ namespace Polaris.Server
 
 		private static void InitConfig()
 		{
-			const string cfgFileName = "./cfg/PolarisAuth.json";
+			const string cfgFileName = "./cfg/PolarisServer.json";
 
 			if (!File.Exists(cfgFileName))
 			{

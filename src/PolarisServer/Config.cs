@@ -22,6 +22,8 @@ namespace Polaris.Server
 		public string DatabasePassword { get; set; } = "Polaris";
 		public string DatabaseName { get; set; } = "Polaris";
 
+		public int MaxConnections { get; set; } = 1024;
+
 		public bool FileLogging { get; set; } = true;
 
 		public static void Create(string filename)
