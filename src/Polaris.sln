@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PolarisLib", "PolarisLib\PolarisLib.xproj", "{EE343089-6170-43B4-B2CA-65B1223EBC15}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PolarisServer", "PolarisServer\PolarisServer.xproj", "{085E9274-34D6-4C7D-9E97-92DB76FF040A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PolarisLib", "PolarisLib\PolarisLib.xproj", "{EE343089-6170-43B4-B2CA-65B1223EBC15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
