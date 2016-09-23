@@ -1,11 +1,10 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 using Polaris.Lib.Utility;
 using System.Collections.Generic;
 
 namespace Tests
 {
-    public class Tests
+	public class Tests
     {
 		#region Polaris.Lib
 		#region FreeList
@@ -81,6 +80,9 @@ namespace Tests
 			Assert.True(list2[1][1] == 2);
 			Assert.True(list2.FreeSpace == 1);
 			Assert.True(list2.CurrentSize == 2);
+
+			l2.Add(3);
+			Assert.True(list2[1][2] == 3);
 		}
 
 		#endregion FreeList

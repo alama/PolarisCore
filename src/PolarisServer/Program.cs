@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Security.Cryptography;
 
 using Polaris.Lib.Utility;

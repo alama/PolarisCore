@@ -1,5 +1,3 @@
-using System;
-
 namespace Polaris.Lib.Data
 {
 	public enum Race : ushort
