@@ -1,6 +1,7 @@
 {
     "projects": [
 	    "PolarisServer",
-        "PolarisLib"
+        "PolarisLib",
+		"PolarisTests"
     ]
 }

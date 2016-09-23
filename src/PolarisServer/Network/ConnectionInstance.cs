@@ -10,7 +10,6 @@ namespace Polaris.Server.Network
 		public HashSet<ConnectionInstance> CurrentConnections;
 		static ConnectionInstance()
 		{
-			CurrentConnections = new HashSet<ConnectionInstance>()
 		}
 
 		public ConnectionInstance(IPAddress addr)

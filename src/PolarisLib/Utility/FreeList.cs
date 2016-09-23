@@ -23,7 +23,7 @@ namespace Polaris.Lib.Utility
 			_data = new FreeNode[size];
 			for (int i = 0; i < size; i++)
 			{
-				_data[i].data = i;
+				_data[i].data = i+1;
 				_data[i].isFree = true;
 			}
 
@@ -44,7 +44,7 @@ namespace Polaris.Lib.Utility
 		public int Add(T obj)
 		{
 			int retVal = _firstFree;
-			if (_firstFree > 0)
+			if (_firstFree >= 0)
 			{
 				int newLocation = (int)(_data[_firstFree].data);
 				_data[_firstFree].data = obj;
@@ -64,7 +64,11 @@ namespace Polaris.Lib.Utility
 			if (_data[idx].isFree)
 				return;
 
-			_data[_lastFree].data = idx;
+			if (_data[_lastFree].isFree)
+				_data[_lastFree].data = idx;
+			else
+				_firstFree = idx;
+
 			_data[idx].isFree = true;
 			_data[idx].data = -1;
 			_lastFree = idx;
