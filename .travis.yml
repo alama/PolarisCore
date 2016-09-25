@@ -19,3 +19,4 @@ script:
   - cd src
   - time dotnet restore
   - dotnet build ./**/project.json
+  - dotnet test ./PolarisTests/project.json
