@@ -11,3 +11,10 @@ before_build:
 
 build:
   verbosity: quiet
+
+test_script:
+- cmd: cd src/PolarisTests
+- cmd: dotnet restore
+- cmd: dotnet build
+- cmd: dotnet test
+- cmd: cd ..
