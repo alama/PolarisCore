@@ -8,7 +8,7 @@ namespace Polaris.Lib.Packet
 	{
 		public PacketHeader header;
 		public byte[] data;
-		public byte[] packet;
+		public byte[] packet { get; protected set; }
 
 		/// For when a packet is received
 		public Packet(byte[] packet)

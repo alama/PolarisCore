@@ -3,8 +3,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
+using Polaris.Lib.Packet;
 using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
+
 
 namespace Polaris.Server.Modules.Listener
 {
@@ -14,12 +16,21 @@ namespace Polaris.Server.Modules.Listener
 		private IPAddress _addr;
 		private int _port;
 		private Thread _threadListener;
+		private static PacketShipList _shipList;
 
 		public static Listener Instance { get; private set; }
 
 		static Listener()
 		{
 			Instance = new Listener();
+
+			//TODO: Should be based off config
+
+			PacketHeader header = new PacketHeader(0x90, 0x11, 0x2C, 0x00, 0x00);
+			_shipList = new PacketShipList();
+			_shipList.IPAddress = new byte[]{ 127, 0, 0, 1 };
+			_shipList.port = 12300;
+			_shipList.ConstructPacket(header);
 		}
 
 		protected Listener()
@@ -84,6 +95,11 @@ namespace Polaris.Server.Modules.Listener
 				switch (action.Type)
 				{
 					case ActionType.LST_NewConnection:
+						{
+							//Send ship list to new connection
+							var client = (TcpClient)action.Parameters[0];
+							client.Client.Send(_shipList.packet);
+						}
 						break;
 					default:
 						break;
