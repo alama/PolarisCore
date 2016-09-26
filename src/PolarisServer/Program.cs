@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-using Polaris.Lib.Utility;
 using Polaris.Server.Modules.Listener;
+using Polaris.Server.Modules.Logging;
 using Polaris.Server.Utility;
 
 
@@ -13,21 +13,21 @@ namespace Polaris.Server
 	{
 		public static void Main(string[] args)
 		{
-			Logger.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
-			Logger.Write("Starting Authentication Server");
-			Logger.Write("Loading Configuration from PolarisAuth.json...");
 			InitConfig();
+			Log.Instance.Initialize(Config.Instance.FileLogging);
+			Log.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
+			Log.Write("Starting Authentication Server");
+			Log.Write("Loading Configuration from PolarisAuth.json...");
 			WriteHeaderInfo();
-			Logger.Write("Checking for RSA Keys...");
+			Log.Write("Checking for RSA Keys...");
 			CheckGenerateRSAKeys();
-			Logger.Write("Connecting to authentication database...");
+			Log.Write("Connecting to authentication database...");
 			CheckTestConnectAuthDB();
-			Logger.Write("Authentication Server ready");
+			Log.Write("Authentication Server ready");
 
 			//Setup and start listener thread
 			Listener.Instance.Initialize(Config.Instance.BindIP, Config.Instance.Port);
-
-			Logger.Write($"Listening for connections on {Config.Instance.BindIP}:{Config.Instance.Port}...");
+			Log.Write($"Listening for connections on {Config.Instance.BindIP}:{Config.Instance.Port}...");
 			Console.ReadLine();
 		}
 
@@ -39,12 +39,10 @@ namespace Polaris.Server
 
 			if (!File.Exists(cfgFileName))
 			{
-				Logger.WriteWarning("Configuration file does not exist, creating default configuration...");
+				Log.WriteWarning("Configuration file did not exist, created default configuration.");
 				Config.Create(cfgFileName);
 			}
-
 			Config.Load(cfgFileName);
-			Logger.WriteToFile = Config.Instance.FileLogging;
 		}
 
 		private static void CheckTestConnectAuthDB()
@@ -55,7 +53,7 @@ namespace Polaris.Server
 		private static void WriteHeaderInfo()
 		{
 			//TODO: Include version info and other configurations in here
-			Logger.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
+			Log.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
 		}
 
 		private static void CheckGenerateRSAKeys()
@@ -69,25 +67,25 @@ namespace Polaris.Server
 			if (!File.Exists(keyPrivate) || !File.Exists(keyPublic))
 			{
 				if (!File.Exists(keyPrivate))
-					Logger.WriteWarning($"Could not find existing private key at {keyPrivate}");
+					Log.WriteWarning($"Could not find existing private key at {keyPrivate}");
 				if (!File.Exists(keyPublic))
-					Logger.WriteWarning($"Could not find existing private key at {keyPublic}");
+					Log.WriteWarning($"Could not find existing private key at {keyPublic}");
 
-				Logger.WriteInfo("Creating new RSA key pair.");
+				Log.WriteInfo("Creating new RSA key pair.");
 				RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider();
 
 				using (FileStream outFile = File.Create(keyPrivate))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(true);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					Logger.WriteInfo($"Generated Private Key at {keyPrivate}");
+					Log.WriteInfo($"Generated Private Key at {keyPrivate}");
 				}
 
 				using (FileStream outFile = File.Create(keyPublic))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(false);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					Logger.WriteInfo($"Generated Public Key at {keyPublic}");
+					Log.WriteInfo($"Generated Public Key at {keyPublic}");
 				}
 			}
 		}

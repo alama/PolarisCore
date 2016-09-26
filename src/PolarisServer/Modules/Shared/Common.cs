@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Polaris.Server.Modules.Shared
+﻿namespace Polaris.Server.Modules.Shared
 {
     public static class Common
     {
@@ -29,7 +27,7 @@ namespace Polaris.Server.Modules.Shared
 		public struct ParameterizedAction
 		{
 			public ActionType Type;
-			public List<object> Parameters;
+			public object[] Parameters;
 		}
 	}
 }

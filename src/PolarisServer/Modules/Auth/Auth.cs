@@ -1,4 +1,4 @@
-﻿namespace Polaris.Server.Modules.Game
+﻿namespace Polaris.Server.Modules.Auth
 {
 	public class Auth
     {

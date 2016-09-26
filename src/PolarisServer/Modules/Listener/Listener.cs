@@ -15,6 +15,8 @@ namespace Polaris.Server.Modules.Listener
 		private int _port;
 		private Thread _threadListener;
 
+		public static Listener Instance { get; private set; }
+
 		static Listener()
 		{
 			Instance = new Listener();
@@ -61,10 +63,10 @@ namespace Polaris.Server.Modules.Listener
 			_listener = new TcpListener(_addr, _port);
 			_listener.Start();
 			_readyFlag.Set();
-			while(true)
+			while(_readyFlag.IsSet)
 			{
 				var client = await _listener.AcceptTcpClientAsync();
-				PushQueue(new ParameterizedAction() { Type = ActionType.LST_NewConnection, Parameters = { client } });
+				PushQueue(new ParameterizedAction() { Type = ActionType.LST_NewConnection, Parameters = new object[] { client } });
 			}
 		}
 
