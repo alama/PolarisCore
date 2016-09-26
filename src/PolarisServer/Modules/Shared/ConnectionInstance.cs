@@ -2,8 +2,9 @@
 using System.Net.Sockets;
 
 using Polaris.Lib.Utility;
+using Polaris.Server.Utility;
 
-namespace Polaris.Server.Network
+namespace Polaris.Server.Modules.Shared
 {
 	public class ConnectionInstance
 	{
@@ -42,10 +43,11 @@ namespace Polaris.Server.Network
 			}
 		}
 
-		public void OnDisconnect()
+		public async virtual void OnDisconnect()
 		{
 			// TODO
 			//Must queue CurrentConnections.Remove(connectionID);
+			//Must queue Client.Dispose();
 		}
 	}
 }

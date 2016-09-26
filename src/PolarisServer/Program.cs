@@ -3,6 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 
 using Polaris.Lib.Utility;
+using Polaris.Server.Modules.Listener;
+using Polaris.Server.Utility;
 
 
 namespace Polaris.Server
@@ -23,15 +25,13 @@ namespace Polaris.Server
 			Logger.Write("Authentication Server ready");
 
 			//Setup and start listener thread
-			SetupStartListener();
+			Listener.Instance.Initialize(Config.Instance.BindIP, Config.Instance.Port);
+
 			Logger.Write($"Listening for connections on {Config.Instance.BindIP}:{Config.Instance.Port}...");
 			Console.ReadLine();
 		}
 
-		private static void SetupStartListener()
-		{
-			// TODO
-		}
+
 
 		private static void InitConfig()
 		{

@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace Polaris.Server
+namespace Polaris.Server.Utility
 {
 	public class Config
 	{
