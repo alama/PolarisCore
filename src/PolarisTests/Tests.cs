@@ -251,14 +251,16 @@ namespace Tests
 				},
 			};
 
-			Listener.Instance.Initialize("127.0.0.1", 12000, Ships);
+			IPAddress addr = new IPAddress(new byte[] { 127, 0, 0, 1});
+
+			Listener.Instance.Initialize(addr.ToString(), 12000, Ships);
 
 			int expectedSize = PacketBase.HeaderSize + Marshal.SizeOf<ShipEntry>() * Ships.Length + 12;
 			byte[] buffer = new byte[expectedSize];
 
 			using (var client = new TcpClient() )
 			{
-				client.Client.Connect("127.0.0.1", 12000);
+				client.Client.Connect(addr, 12000);
 				client.Client.Receive(buffer);
 				client.Close();
 			}
