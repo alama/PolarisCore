@@ -17,6 +17,10 @@ namespace Polaris.Lib.Packet
 			Header.flag2 = 0x00;
 		}
 
+		public PacketShipList(byte[] packet) : base(packet)
+		{
+		}
+
 		public ShipEntry[] ships;
 
 		public override uint PKT_SUB { get { return 0x51; } }

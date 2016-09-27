@@ -13,6 +13,7 @@ using Polaris.Server.Modules.Listener;
 using System.Runtime.InteropServices;
 using Polaris.Lib.Data;
 using Polaris.Lib.Extensions;
+using System.Net;
 
 namespace Tests
 {
@@ -263,7 +264,24 @@ namespace Tests
 			}
 
 			Listener.Stop();
-			
+
+			PacketShipList shipList = new PacketShipList(buffer);
+			PacketHeader Header = PacketBase.GeneratePacketHeader((uint)expectedSize, 0x11, 0x3D, 0x04, 0x00);
+
+			Assert.True(Structure.StructureToByteArray(shipList.Header).SequenceEqual(Structure.StructureToByteArray(Header)), "ShipList packet header does not match expected value");
+
+			using (BinaryReader br = new BinaryReader(new MemoryStream(shipList.Payload)))
+			{
+				Assert.True(shipList.SubXor(br.ReadUInt32()) == Ships.Length, "ShipList packet entry count does not match expected value");
+				for(int i = 0; i < Ships.Length; i++)
+				{
+					byte[] entry = br.ReadBytes(Marshal.SizeOf<ShipEntry>());
+					ShipEntry s = Structure.ByteArrayToStructure<ShipEntry>(entry);
+					Assert.True(new IPAddress(s.IP).ToString() == Ships[i]["IPAddress"], $"ShipList Packet ShipEntry IP @ {i} does not match expected value");
+					Assert.True(s.ShipName == Ships[i]["ShipName"], $"ShipList Packet ShipEntry ShipName @ {i} does not match expected value");
+					Assert.True(s.Status == (ShipStatus)Enum.Parse(typeof(ShipStatus),Ships[i]["Status"]), $"ShipList Packet ShipEntry ShipName @ {i} does not match expected value");
+				}
+			}
 		}
 
 		#endregion

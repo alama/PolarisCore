@@ -48,6 +48,17 @@ namespace Polaris.Lib.Packet.Common
 		{
 		}
 
+		public static PacketHeader GeneratePacketHeader(uint size, byte type, byte subType, byte flag1, byte flag2)
+		{
+			PacketHeader header = new PacketHeader();
+			header.size = size;
+			header.type = type;
+			header.subType = subType;
+			header.flag1 = flag1;
+			header.flag2 = flag2;
+			return header;
+		}
+
 		protected void SetPacketHeader(uint size, byte type, byte subType, byte flag1, byte flag2)
 		{
 			Header.size = size;
