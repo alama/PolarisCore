@@ -1,20 +1,22 @@
 using System;
+using System.Runtime.InteropServices;
 
-namespace Polaris.Lib.Packet
+namespace Polaris.Lib.Packet.Common
 {
 	// [Size:4][Type:1][SubType:1][Flag1:1][Flag2:1]
-	public class PacketHeader
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+	public struct PacketHeader
 	{
-		public const uint HeaderSize = 0x8;
-
-		// TODO: Determine if these need to be set to read-only
 		public uint size;
 		public byte type;
 		public byte subType;
 		public byte flag1;
 		public byte flag2;
+	}
+}
 
-		// Called when receiving a packet
+/*
+  		// Called when receiving a packet
 		public PacketHeader(byte[] pkt)
 		{
 			this.size = BitConverter.ToUInt32(pkt, 0);
@@ -33,5 +35,4 @@ namespace Polaris.Lib.Packet
 			this.flag1 = flag1;
 			this.flag2 = flag2;
 		}
-	}
-}
+ */

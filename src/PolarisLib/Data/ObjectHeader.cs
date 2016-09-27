@@ -2,7 +2,7 @@ using System;
 
 namespace Polaris.Lib.Data
 {
-	public enum EntityType : UInt16
+	public enum EntityType : ushort
 	{
 		Player = 0x04,
 		Map = 0x05,
@@ -13,7 +13,7 @@ namespace Polaris.Lib.Data
 	{
 		public UInt32 ID { get; set; }
 		public EntityType EntityType { get; set; }
-		public UInt16 Unknown { get; set; }
+		public ushort Unknown { get; set; }
 
 		public ObjectHeader(uint id, EntityType type)
 		{

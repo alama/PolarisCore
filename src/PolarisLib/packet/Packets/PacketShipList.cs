@@ -1,32 +1,39 @@
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
+
+using Polaris.Lib.Packet.Common;
 
 namespace Polaris.Lib.Packet
 {
-	public class PacketShipList : Packet, ISendPacket
+	public class PacketShipList : PacketBase
 	{
-		public byte[] unk1; //0x8-0x63, 0x5C
-		public byte[] IPAddress; //0x64-0x67, 0x4
-		public ushort port; //0x68
-
-		public PacketShipList() : base()
+		public enum ShipStatus : ushort
 		{
-			unk1 = new byte[0x5C];
+			Unknown = 0,
+			Online,
+			Busy,
+			Full,
+			Offline
 		}
 
-		public byte[] ConstructPacket(PacketHeader header)
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+		public struct ShipEntry
 		{
-			this.header = header;
-			this.data = new byte[this.header.size - PacketHeader.HeaderSize];
+			public uint shipNumber;
 
-			using (BinaryWriter writer = new BinaryWriter(new MemoryStream(this.data)))
-			{
-				writer.Write(unk1);
-				writer.Write(IPAddress);
-				writer.Write(port);
-			}
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
+			public string name;
 
-			BuildPacket();
-			return this.packet;
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+			public byte[] ip;
+
+			public uint zero;
+			public ShipStatus status;
+			public ushort order;
+			public uint unknown;
 		}
+
+		
 	}
 }

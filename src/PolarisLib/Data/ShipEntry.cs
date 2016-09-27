@@ -17,7 +17,7 @@ namespace Polaris.Lib.Data
 		public string Name { get; set; } // 16 characters
 		public byte[] IP { get; set; } // 4 bytes
 		public ShipStatus Status { get; set; }
-		public UInt16 Order { get; set; }
+		public ushort Order { get; set; }
 		public UInt32 Unknown { get; set; }
 	}
 }
