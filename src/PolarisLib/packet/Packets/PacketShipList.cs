@@ -2,38 +2,40 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using Polaris.Lib.Data;
+using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet.Common;
+
 
 namespace Polaris.Lib.Packet
 {
-	public class PacketShipList : PacketBase
+	public class PacketShipList : PacketBase, IPacketSent
 	{
-		public enum ShipStatus : ushort
+		public PacketShipList(byte type, byte subType) : base(type, subType)
 		{
-			Unknown = 0,
-			Online,
-			Busy,
-			Full,
-			Offline
+			Header.flag1 = 0x04;
+			Header.flag2 = 0x00;
 		}
 
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
-		public struct ShipEntry
+		public ShipEntry[] ships;
+
+		public override uint PKT_SUB { get { return 0x51; } }
+		public override uint PKT_XOR { get { return 0xE418; } }
+
+		public void ConstructPayload()
 		{
-			public uint shipNumber;
+			Header.size = (uint)(HeaderSize + Marshal.SizeOf<ShipEntry>() * ships.Length + 12);
+			Payload = new byte[Header.size - HeaderSize];
+			using (BinaryWriter bw = new BinaryWriter(new MemoryStream(Payload)))
+			{
+				bw.Write(AddXor((uint)ships.Length));
+				foreach (ShipEntry s in ships)
+					bw.WriteStructure(s);
 
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
-			public string name;
-
-			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-			public byte[] ip;
-
-			public uint zero;
-			public ShipStatus status;
-			public ushort order;
-			public uint unknown;
+				bw.Write((int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+				bw.Write(1);
+			}
 		}
 
-		
 	}
 }

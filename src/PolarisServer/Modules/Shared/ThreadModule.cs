@@ -28,6 +28,11 @@ namespace Polaris.Server.Modules.Shared
 			_readyFlag.Reset();
 		}
 
+		public static void Stop()
+		{
+			_readyFlag.Reset();
+		}
+
 		/// <summary>
 		/// Initialize and start thread
 		/// </summary>

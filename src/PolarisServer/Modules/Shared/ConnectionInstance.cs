@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 
 using Polaris.Lib.Utility;
-using Polaris.Server.Utility;
+using Polaris.Server.Shared;
 
 namespace Polaris.Server.Modules.Shared
 {

@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Sockets;
+
 using Xunit;
 
+using Polaris.Lib.Packet;
 using Polaris.Lib.Packet.Common;
 using Polaris.Lib.Utility;
-
+using Polaris.Server.Modules.Listener;
+using System.Runtime.InteropServices;
+using Polaris.Lib.Data;
+using Polaris.Lib.Extensions;
 
 namespace Tests
 {
@@ -145,7 +152,7 @@ namespace Tests
 			Assert.True(pkt.Header.flag1 == 0x40);
 			Assert.True(pkt.Header.flag2 == 0x00);
 
-			byte[] data =   
+			byte[] data =
 			{
 				0x00, 0x00, 0x00, 0x00,
 				0x00, 0x00, 0x00, 0x00,
@@ -220,6 +227,45 @@ namespace Tests
 		#endregion Polaris.Lib
 
 		#region Polaris.Server.Listener
+
+		// TODO: Need integration testing for entire connection procedure
+		[Fact]
+		public void PolarisServer_Listener_TestShipListPacket()
+		{
+			Dictionary<string, string>[] Ships =
+			{
+				new Dictionary<string, string>()
+				{
+					{ "ShipName", "Test1" },
+					{ "IPAddress", "127.0.0.1" },
+					{ "Port", "12100" },
+					{ "Status", "Online" },
+				},
+				new Dictionary<string, string>()
+				{
+					{ "ShipName", "Test2" },
+					{ "IPAddress", "127.0.0.1" },
+					{ "Port", "12200" },
+					{ "Status", "Online" },
+				},
+			};
+
+			Listener.Instance.Initialize("127.0.0.1", 12000, Ships);
+
+			int expectedSize = PacketBase.HeaderSize + Marshal.SizeOf<ShipEntry>() * Ships.Length + 12;
+			byte[] buffer = new byte[expectedSize];
+
+			using (var client = new TcpClient() )
+			{
+				client.Client.Connect("127.0.0.1", 12000);
+				client.Client.Receive(buffer);
+				client.Close();
+			}
+
+			Listener.Stop();
+			
+		}
+
 		#endregion
 
 	}

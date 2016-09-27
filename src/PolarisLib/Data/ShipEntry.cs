@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Polaris.Lib.Data
 {
@@ -11,13 +12,20 @@ namespace Polaris.Lib.Data
 		Offline
 	}
 
-	public class ShipEntry
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+	public struct ShipEntry
 	{
-		public UInt32 Number { get; set; }
-		public string Name { get; set; } // 16 characters
-		public byte[] IP { get; set; } // 4 bytes
-		public ShipStatus Status { get; set; }
-		public ushort Order { get; set; }
-		public UInt32 Unknown { get; set; }
+		public uint ShipNumber;
+
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
+		public string ShipName;
+
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public byte[] IP;
+
+		public uint zero;
+		public ShipStatus Status;
+		public ushort Order;
+		public uint unk1;
 	}
 }

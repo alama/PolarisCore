@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 using Polaris.Server.Modules.Listener;
 using Polaris.Server.Modules.Logging;
-using Polaris.Server.Utility;
+using Polaris.Server.Shared;
 
 
 namespace Polaris.Server
@@ -13,6 +13,7 @@ namespace Polaris.Server
 	{
 		public static void Main(string[] args)
 		{
+			// TODO: For multiple server ships, add a flag to just not start the listener (just Auth/Game/Log are good enough)
 			InitConfig();
 			Log.Instance.Initialize(Config.Instance.FileLogging);
 			Log.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
@@ -26,8 +27,8 @@ namespace Polaris.Server
 			Log.Write("Authentication Server ready");
 
 			//Setup and start listener thread
-			Listener.Instance.Initialize(Config.Instance.BindIP, Config.Instance.Port);
-			Log.Write($"Listening for connections on {Config.Instance.BindIP}:{Config.Instance.Port}...");
+			Listener.Instance.Initialize(Config.Instance.ListenerBindIP, Config.Instance.ListenerPort, Config.Instance.Ships);
+			Log.Write($"Listening for connections on {Config.Instance.ListenerBindIP}:{Config.Instance.ListenerPort}...");
 			Console.ReadLine();
 		}
 

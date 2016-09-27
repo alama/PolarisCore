@@ -14,6 +14,9 @@ namespace Polaris.Lib.Packet.Common
 		public PacketHeader Header = new PacketHeader();
 		public byte[] Payload;
 
+		public virtual uint PKT_SUB { get { return 0; } }
+		public virtual uint PKT_XOR { get { return 0; } }
+
 		/// For packets that are received
 		public PacketBase(byte[] packet)
 		{
@@ -35,7 +38,13 @@ namespace Polaris.Lib.Packet.Common
 			this.Payload = Payload;
 		}
 
-		public PacketBase()
+		public PacketBase(byte type, byte subType)
+		{
+			Header.type = type;
+			Header.subType = subType;
+		}
+
+		protected PacketBase()
 		{
 		}
 
@@ -61,9 +70,14 @@ namespace Polaris.Lib.Packet.Common
 			return pkt;
 		}
 
-		public virtual void ParsePacket()
+		public uint SubXor(uint num)
 		{
-			throw new NotImplementedException("ParsePacket is not implemented for this packet type");
+			return (num ^ PKT_XOR) - PKT_SUB;
+		}
+
+		public uint AddXor(uint num)
+		{
+			return (num + PKT_SUB) ^ PKT_XOR;
 		}
 
 		/// Get PacketID to use with PacketList
