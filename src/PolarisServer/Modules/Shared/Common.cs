@@ -20,6 +20,12 @@
 
 			#endregion
 
+			#region Block
+
+			BLK_HELLO,
+
+			#endregion
+
 			#region Logger
 
 			LOG_NORMAL,

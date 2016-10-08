@@ -10,7 +10,7 @@ using Polaris.Lib.Packet.Packets;
 using Polaris.Server.Modules.Logging;
 using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
-
+using System.Threading.Tasks;
 
 namespace Polaris.Server.Modules.Ship
 {
@@ -19,6 +19,7 @@ namespace Polaris.Server.Modules.Ship
 		private TcpListener _listener;
 		private IPAddress _addr;
 		private int _port;
+		private ushort _shipID;
 		private Thread _threadListener;
 		private byte[] _headerBuffer;
 
@@ -49,12 +50,14 @@ namespace Polaris.Server.Modules.Ship
 		/// </summary>
 		/// <param name="addr" type="string">Listener IP Address</param>
 		/// <param name="port" type="int">Listener Port</param>
+		/// <param name="shipID" type = "ushort">Ship ID</param>
 		/// <param name="Blocks" type="Dictionary<string, string>[]">List of blocks</param>
 		public override void Initialize(params object[] parameters)
 		{
 			_addr = IPAddress.Parse((string)parameters[0]);
 			_port = (int)parameters[1];
-			var blockInfo = (Dictionary<string, string>[])parameters[2];
+			_shipID = (ushort)parameters[2];
+			var blockInfo = (Dictionary<string, string>[])parameters[3];
 
 			_threadListener = new Thread(() => { ListenConnections(); }) { IsBackground = true };
 			_thread = new Thread(() => { Instance.ProcessThread(); });
@@ -62,15 +65,21 @@ namespace Polaris.Server.Modules.Ship
 			_blocks = new Block[blockInfo.Length];
 			_blockPackets = new PacketInitialBlock[blockInfo.Length];
 
-			for(int i = 0; i < _blocks.Length; i++)
-			{
-				_blocks[i] = new Block(blockInfo[i]["BlockName"], Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
-				_blockPackets[i] = new PacketInitialBlock(0x11, 0x2C);
-				_blockPackets[i].BlockAddress = _addr;
-				_blockPackets[i].BlockPort = _blocks[i].Port;
-				_blockPackets[i].BlockNameDescription = $"{_blocks[i].BlockName}: {_blocks[i].Description}";
-				_blockPackets[i].ConstructPayload();
-			}
+
+			Parallel.For(0, _blocks.Length, i =>
+				{
+					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)(i+1), _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
+					_blockPackets[i] = new PacketInitialBlock(0x11, 0x2C);
+					_blockPackets[i].BlockAddress = _addr;
+					_blockPackets[i].BlockPort = _blocks[i].Port;
+					_blockPackets[i].BlockNameDescription = $"{_blocks[i].BlockName}: {_blocks[i].Description}";
+					_blockPackets[i].ConstructPayload();
+
+					_blocks[i].Initialize();
+				}
+			);
+
+			Log.WriteInfo($"Initialized {_blocks.Length} blocks");
 
 			_threadListener.Start();
 			_thread.Start();

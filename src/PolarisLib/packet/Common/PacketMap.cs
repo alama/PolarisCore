@@ -12,6 +12,7 @@ namespace Polaris.Lib.Packet.Common
 				{ 0x113D, typeof(PacketShipList) },
 				{ 0x112C, typeof(PacketInitialBlock) },
 				{ 0x1100, typeof(PacketAuth) },
+				{ 0x0308, typeof(PacketBlockHello) }
 			};
 	}
 }

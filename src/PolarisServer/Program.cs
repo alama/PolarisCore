@@ -31,7 +31,7 @@ namespace Polaris.Server
 			Log.Write($"InfoServer listening for connections on {Config.Instance.InfoBindIP}:{Config.Instance.InfoPort}...");
 
 			Log.Write("Starting GameServer...");
-			Game.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.Blocks);
+			Game.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.ShipID, Config.Instance.Blocks);
 			Log.Write($"GameServer listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
 
 

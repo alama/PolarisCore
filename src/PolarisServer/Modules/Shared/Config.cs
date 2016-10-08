@@ -21,24 +21,6 @@ namespace Polaris.Server.Shared
 
 		public int MaxConnections { get; set; } = 1024;
 
-		public Dictionary<string, string>[] Blocks { get; set; } =
-		{
-			new Dictionary<string, string>()
-			{
-				{ "BlockName", "Polaris Block 1" },
-				{ "Port", "12101" },
-				{ "Capacity", "10" },
-				{ "Description", "The first block" }
-			},
-			new Dictionary<string, string>()
-			{
-				{ "BlockName", "Polaris Block 2" },
-				{ "Port", "12102" },
-				{ "Capacity", "5" },
-				{ "Description", "The second block" }
-			},
-		};
-
 		public bool FileLogging { get; set; } = true;
 
 
@@ -47,6 +29,8 @@ namespace Polaris.Server.Shared
 
 		public string ShipBindIP { get; set; } = "127.0.0.1";
 		public int ShipPort { get; set; } = 12100;
+
+		public ushort ShipID { get; set; } = 1; 
 
 		/// All of the ship information needs to be here, and it should be identical between ships
 		/// Blame SEGA for this design choice
@@ -85,6 +69,23 @@ namespace Polaris.Server.Shared
 			},
 		};
 
+		public Dictionary<string, string>[] Blocks { get; set; } =
+{
+			new Dictionary<string, string>()
+			{
+				{ "BlockName", "Polaris Block 1" },
+				{ "Port", "12101" },
+				{ "Capacity", "10" },
+				{ "Description", "The first block" }
+			},
+			new Dictionary<string, string>()
+			{
+				{ "BlockName", "Polaris Block 2" },
+				{ "Port", "12102" },
+				{ "Capacity", "5" },
+				{ "Description", "The second block" }
+			},
+		};
 
 		public static void Create(string filename)
 		{
