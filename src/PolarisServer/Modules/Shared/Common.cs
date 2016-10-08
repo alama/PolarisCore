@@ -15,14 +15,13 @@
 			#region Ship
 
 			GAM_NEWCONN,
-			GAM_INITHANDSHAKE,
-			GAM_AUTH,
 
 			#endregion
 
 			#region Block
 
 			BLK_HELLO,
+			BLK_DISCONN,
 
 			#endregion
 

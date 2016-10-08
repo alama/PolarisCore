@@ -16,6 +16,9 @@ namespace Polaris.Server.Modules.Ship
 {
 	public class Game : ThreadModule, IDisposable
 	{
+		private static PacketShipList _shipList;
+		public static Game Instance { get; } = new Game();
+
 		private TcpListener _listener;
 		private IPAddress _addr;
 		private int _port;
@@ -26,9 +29,8 @@ namespace Polaris.Server.Modules.Ship
 		private Block[] _blocks;
 		private PacketInitialBlock[] _blockPackets;
 
-		private static PacketShipList _shipList;
+		public Block[] Blocks { get { return _blocks; } ; private set { _blocks = value; } }
 
-		public static Game Instance { get; } = new Game();
 
 		protected Game()
 		{
@@ -68,7 +70,7 @@ namespace Polaris.Server.Modules.Ship
 
 			Parallel.For(0, _blocks.Length, i =>
 				{
-					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)(i + 1), _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
+					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)i, _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
 					_blockPackets[i] = new PacketInitialBlock(0x11, 0x2C);
 					_blockPackets[i].BlockAddress = _addr;
 					_blockPackets[i].BlockPort = _blocks[i].Port;

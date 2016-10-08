@@ -60,7 +60,7 @@ namespace Polaris.Server.Modules.Ship
 			_thread.Start();
 
 			_helloPacket = new PacketBlockHello(0x03, 0x08);
-			_helloPacket.BlockCode = (ushort)(ShipID*100 + BlockID);
+			_helloPacket.BlockCode = (ushort)(ShipID * 100 + BlockID);
 			_helloPacket.ProtocolVersion = 0x03;
 			_helloPacket.ConstructPayload();
 
@@ -88,7 +88,15 @@ namespace Polaris.Server.Modules.Ship
 						{
 							var client = (TcpClient)action.Parameters[0];
 							client.Client.Send(_helloPacket.Packet());
-							client.Close();
+							var c = new ConnectionInstance(client, BlockID);
+							c.HandleClient();
+						}
+						break;
+					case ActionType.BLK_DISCONN:
+						{
+							var connectionID = (int)action.Parameters[0];
+							ConnectionInstance.CurrentConnections[connectionID].Client.Close();
+							ConnectionInstance.CurrentConnections.Remove(connectionID);
 						}
 						break;
 					default:
