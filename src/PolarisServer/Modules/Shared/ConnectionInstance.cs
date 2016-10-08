@@ -39,12 +39,23 @@ namespace Polaris.Server.Modules.Shared
 
 		public async void HandleClient()
 		{
-			while (true)
+			try
 			{
-				int x = await Client.Client.ReceiveAsync(_buffer, SocketFlags.None);
-				// TODO: Parse Packet
-				//Game.Instance.Blocks[BlockID].PushQueue
+				while (Client.Connected)
+				{
+					int x = await Client.Client.ReceiveAsync(_buffer, SocketFlags.None);
+					// TODO: Parse Packet
+					//Game.Instance.Blocks[BlockID].PushQueue
+				}
 			}
+			catch(SocketException)
+			{
+			}
+			finally
+			{
+				OnDisconnect();
+			}
+
 		}
 
 		~ConnectionInstance()
