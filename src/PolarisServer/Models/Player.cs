@@ -1,0 +1,15 @@
+﻿using System;
+using System.Net.Sockets;
+
+using static Polaris.Server.Shared.Common;
+
+namespace Polaris.Server.Models
+{
+	public class Player
+	{
+		public int ID { get; set; }
+		public string Name { get; set; }
+
+		Character Character { get; set; }
+	}
+}
