@@ -7,6 +7,7 @@ using System.Threading;
 using Polaris.Lib.Data;
 using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet;
+using Polaris.Server.Modules.Logging;
 using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
 
@@ -89,6 +90,7 @@ namespace Polaris.Server.Modules.Ship
 			while (_readyFlag.IsSet)
 			{
 				var client = await _listener.AcceptTcpClientAsync();
+				Log.WriteMessage($"New connection from {client.Client.RemoteEndPoint}");
 				PushQueue(new ParameterizedAction() { Type = ActionType.SHP_NEWCONN, Parameters = new object[] { client } });
 			}
 		}

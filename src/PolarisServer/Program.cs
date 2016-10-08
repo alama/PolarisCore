@@ -14,20 +14,18 @@ namespace Polaris.Server
 		public static void Main(string[] args)
 		{
 			InitConfig();
-			LogModule.Instance.Initialize(Config.Instance.FileLogging);
-			LogModule.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
-			LogModule.Write("Starting Authentication Server");
-			LogModule.Write("Loading Configuration from PolarisAuth.json...");
+			Log.Instance.Initialize(Config.Instance.FileLogging);
+			Log.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
 			WriteHeaderInfo();
-			LogModule.Write("Checking for RSA Keys...");
+			Log.Write("Checking for RSA Keys...");
 			CheckGenerateRSAKeys();
-			LogModule.Write("Connecting to authentication database...");
+			Log.Write("Connecting to database...");
 			CheckTestConnectAuthDB();
-			LogModule.Write("Authentication Server ready");
+			Log.Write("Connection to database OK");
 
 			//Setup and start ship
 			Ship.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.Ships);
-			LogModule.Write($"Listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
+			Log.Write($"Listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
 			Console.ReadLine();
 		}
 
@@ -39,7 +37,7 @@ namespace Polaris.Server
 
 			if (!File.Exists(cfgFileName))
 			{
-				LogModule.WriteWarning("Configuration file did not exist, created default configuration.");
+				Log.WriteWarning("Configuration file did not exist, created default configuration.");
 				Config.Create(cfgFileName);
 			}
 			Config.Load(cfgFileName);
@@ -53,7 +51,7 @@ namespace Polaris.Server
 		private static void WriteHeaderInfo()
 		{
 			//TODO: Include version info and other configurations in here
-			LogModule.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
+			Log.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
 		}
 
 		private static void CheckGenerateRSAKeys()
@@ -67,25 +65,25 @@ namespace Polaris.Server
 			if (!File.Exists(keyPrivate) || !File.Exists(keyPublic))
 			{
 				if (!File.Exists(keyPrivate))
-					LogModule.WriteWarning($"Could not find existing private key at {keyPrivate}");
+					Log.WriteWarning($"Could not find existing private key at {keyPrivate}");
 				if (!File.Exists(keyPublic))
-					LogModule.WriteWarning($"Could not find existing private key at {keyPublic}");
+					Log.WriteWarning($"Could not find existing private key at {keyPublic}");
 
-				LogModule.WriteInfo("Creating new RSA key pair.");
+				Log.WriteInfo("Creating new RSA key pair.");
 				RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider();
 
 				using (FileStream outFile = File.Create(keyPrivate))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(true);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					LogModule.WriteInfo($"Generated Private Key at {keyPrivate}");
+					Log.WriteInfo($"Generated Private Key at {keyPrivate}");
 				}
 
 				using (FileStream outFile = File.Create(keyPublic))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(false);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					LogModule.WriteInfo($"Generated Public Key at {keyPublic}");
+					Log.WriteInfo($"Generated Public Key at {keyPublic}");
 				}
 			}
 		}
