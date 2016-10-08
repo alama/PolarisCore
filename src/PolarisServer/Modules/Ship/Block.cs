@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 
-using Polaris.Server.Modules.Shared;
+using Polaris.Server.Shared;
 using System.Threading;
 using Polaris.Server.Modules.Logging;
-using static Polaris.Server.Modules.Shared.Common;
-using Polaris.Lib.Extensions;
+using static Polaris.Server.Shared.Common;
 using Polaris.Lib.Packet.Packets;
+using Polaris.Lib.Utility;
+using Polaris.Server.Models;
 
 namespace Polaris.Server.Modules.Ship
 {
@@ -22,6 +20,7 @@ namespace Polaris.Server.Modules.Ship
 		public readonly IPAddress IPAddress;
 		public readonly ushort Port;
 		public readonly int Capacity;
+		public readonly int PremiumCapacity; //Additional Capacity
 		public readonly string Description;
 
 		public int PlayerCount;
@@ -29,8 +28,9 @@ namespace Polaris.Server.Modules.Ship
 		private TcpListener _listener;
 		private Thread _threadListener;
 		private PacketBlockHello _helloPacket;
+		private FreeList<Connection> _connections;
 
-		public Block(string blockName, ushort shipID, ushort blockID, IPAddress address, ushort port, int capacity, string description)
+		public Block(string blockName, ushort shipID, ushort blockID, IPAddress address, ushort port, int capacity, int premiumcap, string description)
 		{
 			BlockName = blockName;
 			ShipID = shipID;
@@ -38,7 +38,10 @@ namespace Polaris.Server.Modules.Ship
 			IPAddress = address;
 			Port = port;
 			Capacity = capacity;
+			PremiumCapacity = premiumcap;
 			Description = description;
+
+			_connections = new FreeList<Connection>(Capacity + PremiumCapacity);
 		}
 
 		~Block()
@@ -88,15 +91,20 @@ namespace Polaris.Server.Modules.Ship
 						{
 							var client = (TcpClient)action.Parameters[0];
 							client.Client.Send(_helloPacket.Packet());
-							var c = new ConnectionInstance(client, BlockID);
-							c.HandleClient();
+							var c = _connections.Add(new Connection(client));
+							if (c < 0)
+							{
+								; //TODO: Send 'block full packet'
+							}
+							else
+							{
+								_connections[c].ConnectionID = c;
+								_connections[c].Listen();
+							}
 						}
 						break;
 					case ActionType.BLK_DISCONN:
 						{
-							var connectionID = (int)action.Parameters[0];
-							ConnectionInstance.CurrentConnections[connectionID].Client.Close();
-							ConnectionInstance.CurrentConnections.Remove(connectionID);
 						}
 						break;
 					default:

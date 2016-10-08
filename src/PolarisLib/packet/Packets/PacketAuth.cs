@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Polaris.Lib.Packet.Common;
 
 namespace Polaris.Lib.Packet.Packets
 {
-    public class PacketAuth : PacketBase, IPacketRecv
+	public class PacketAuth : PacketBase, IPacketRecv
     {
 
 		public PacketAuth(byte type, byte subType) : base(type, subType)

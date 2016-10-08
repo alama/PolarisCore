@@ -8,8 +8,8 @@ using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet.Common;
 using Polaris.Lib.Packet.Packets;
 using Polaris.Server.Modules.Logging;
-using Polaris.Server.Modules.Shared;
-using static Polaris.Server.Modules.Shared.Common;
+using Polaris.Server.Shared;
+using static Polaris.Server.Shared.Common;
 using System.Threading.Tasks;
 
 namespace Polaris.Server.Modules.Ship
@@ -70,7 +70,7 @@ namespace Polaris.Server.Modules.Ship
 
 			Parallel.For(0, _blocks.Length, i =>
 				{
-					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)i, _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
+					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)i, _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), Convert.ToInt32(blockInfo[i]["PremiumCapacity"]), blockInfo[i]["Description"]);
 					_blockPackets[i] = new PacketInitialBlock(0x11, 0x2C);
 					_blockPackets[i].BlockAddress = _addr;
 					_blockPackets[i].BlockPort = _blocks[i].Port;
@@ -98,7 +98,6 @@ namespace Polaris.Server.Modules.Ship
 			_readyFlag.Set();
 			while (_readyFlag.IsSet)
 			{
-				//A new connection here will get the 'free block' and 'hello' packets
 				var client = await _listener.AcceptTcpClientAsync();
 				Log.WriteMessage($"[GameServer] New connection from {client.Client.RemoteEndPoint}");
 				PushQueue(new ParameterizedAction() { Type = ActionType.GAM_NEWCONN, Parameters = new object[] { client } });

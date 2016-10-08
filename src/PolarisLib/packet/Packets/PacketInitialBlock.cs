@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet.Common;
@@ -12,7 +8,7 @@ using Polaris.Lib.Packet.Common;
 
 namespace Polaris.Lib.Packet.Packets
 {
-    public class PacketInitialBlock : PacketBase, IPacketSent
+	public class PacketInitialBlock : PacketBase, IPacketSent
     {
 		private const uint PAYLOAD_SIZE = 0x88;
 

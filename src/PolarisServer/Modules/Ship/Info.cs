@@ -8,8 +8,8 @@ using Polaris.Lib.Data;
 using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet.Packets;
 using Polaris.Server.Modules.Logging;
-using Polaris.Server.Modules.Shared;
-using static Polaris.Server.Modules.Shared.Common;
+using Polaris.Server.Shared;
+using static Polaris.Server.Shared.Common;
 
 // TODO: This can actually just be a single callback that returns the ship list
 
