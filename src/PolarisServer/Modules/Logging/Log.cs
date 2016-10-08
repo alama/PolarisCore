@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 using Polaris.Lib.Utility;
 using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
-using System.Linq;
 
 namespace Polaris.Server.Modules.Logging
 {

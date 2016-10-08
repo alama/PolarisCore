@@ -7,7 +7,7 @@ using Polaris.Lib.Extensions;
 using Polaris.Lib.Packet.Common;
 
 
-namespace Polaris.Lib.Packet
+namespace Polaris.Lib.Packet.Packets
 {
 	public class PacketShipList : PacketBase, IPacketSent
 	{

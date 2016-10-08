@@ -6,15 +6,16 @@ using System.Threading;
 
 using Polaris.Lib.Data;
 using Polaris.Lib.Extensions;
-using Polaris.Lib.Packet;
+using Polaris.Lib.Packet.Packets;
 using Polaris.Server.Modules.Logging;
 using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
 
+// TODO: This can actually just be a single callback that returns the ship list
 
 namespace Polaris.Server.Modules.Ship
 {
-	public class Ship : ThreadModule, IDisposable
+	public class Info : ThreadModule, IDisposable
 	{
 		private TcpListener _listener;
 		private IPAddress _addr;
@@ -23,14 +24,13 @@ namespace Polaris.Server.Modules.Ship
 
 		private static PacketShipList _shipList;
 
-		public static Ship Instance { get; } = new Ship();
+		public static Info Instance { get; } = new Info();
 
-		protected Ship()
+		protected Info()
 		{
-
 		}
 
-		~Ship()
+		~Info()
 		{
 			this.Dispose();
 		}
@@ -90,8 +90,8 @@ namespace Polaris.Server.Modules.Ship
 			while (_readyFlag.IsSet)
 			{
 				var client = await _listener.AcceptTcpClientAsync();
-				Log.WriteMessage($"New connection from {client.Client.RemoteEndPoint}");
-				PushQueue(new ParameterizedAction() { Type = ActionType.SHP_NEWCONN, Parameters = new object[] { client } });
+				Log.WriteMessage($"[InfoServer] New connection from {client.Client.RemoteEndPoint}");
+				PushQueue(new ParameterizedAction() { Type = ActionType.INF_NEWCONN, Parameters = new object[] { client } });
 			}
 		}
 
@@ -111,19 +111,18 @@ namespace Polaris.Server.Modules.Ship
 
 				switch (action.Type)
 				{
-					case ActionType.SHP_NEWCONN:
+					case ActionType.INF_NEWCONN:
 						{
-							//Send ship list to new connection
 							var client = (TcpClient)action.Parameters[0];
 							client.Client.Send(_shipList.Packet());
 							client.Close();
 						}
 						break;
 					default:
+						Log.WriteError($"[InfoServer] Unsupported action type received");
 						break;
 				}
 			}
-			//SendAllDisconnect
 		}
 	}
 }

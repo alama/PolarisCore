@@ -6,8 +6,8 @@ using System.Net.Sockets;
 
 using Xunit;
 
-using Polaris.Lib.Packet;
 using Polaris.Lib.Packet.Common;
+using Polaris.Lib.Packet.Packets;
 using Polaris.Lib.Utility;
 using Polaris.Server.Modules.Ship;
 using System.Runtime.InteropServices;
@@ -227,11 +227,11 @@ namespace Tests
 
 		#endregion Polaris.Lib
 
-		#region Polaris.Server.Listener
+		#region Polaris.Server.Ship
 
 		// TODO: Need integration testing for entire connection procedure
 		[Fact]
-		public void PolarisServer_Listener_TestShipListPacket()
+		public void PolarisServer_Ship_Info_TestShipListPacket()
 		{
 			Dictionary<string, string>[] Ships =
 			{
@@ -253,7 +253,7 @@ namespace Tests
 
 			IPAddress addr = new IPAddress(new byte[] { 127, 0, 0, 1});
 
-			Ship.Instance.Initialize(addr.ToString(), 12000, Ships);
+			Info.Instance.Initialize(addr.ToString(), 12000, Ships);
 
 			int expectedSize = PacketBase.HeaderSize + Marshal.SizeOf<ShipEntry>() * Ships.Length + 12;
 			byte[] buffer = new byte[expectedSize];
@@ -265,7 +265,7 @@ namespace Tests
 				client.Close();
 			}
 
-			Ship.Instance.Stop();
+			Info.Instance.Stop();
 
 			PacketShipList shipList = new PacketShipList(buffer);
 			PacketHeader Header = PacketBase.GeneratePacketHeader((uint)expectedSize, 0x11, 0x3D, 0x04, 0x00);

@@ -26,8 +26,8 @@ namespace Polaris.Lib.Packet.Common
 			Header.flag1 = packet[6];
 			Header.flag2 = packet[7];
 
-			Payload = new byte[Header.size-HeaderSize];
-			
+			Payload = new byte[Header.size - HeaderSize];
+
 			Array.Copy(packet, HeaderSize, Payload, 0x0, packet.Length - HeaderSize);
 		}
 
@@ -57,6 +57,18 @@ namespace Polaris.Lib.Packet.Common
 			header.flag1 = flag1;
 			header.flag2 = flag2;
 			return header;
+		}
+
+		public static PacketHeader GetPacketheader(byte[] packet)
+		{
+			return new PacketHeader
+			{
+				size = BitConverter.ToUInt32(packet, 0),
+				type = packet[4],
+				subType = packet[5],
+				flag1 = packet[6],
+				flag2 = packet[7],
+			};
 		}
 
 		protected void SetPacketHeader(uint size, byte type, byte subType, byte flag1, byte flag2)

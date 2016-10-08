@@ -21,7 +21,29 @@ namespace Polaris.Server.Shared
 
 		public int MaxConnections { get; set; } = 1024;
 
+		public Dictionary<string, string>[] Blocks { get; set; } =
+		{
+			new Dictionary<string, string>()
+			{
+				{ "BlockName", "Polaris Block 1" },
+				{ "Port", "12101" },
+				{ "Capacity", "10" },
+				{ "Description", "The first block" }
+			},
+			new Dictionary<string, string>()
+			{
+				{ "BlockName", "Polaris Block 2" },
+				{ "Port", "12102" },
+				{ "Capacity", "5" },
+				{ "Description", "The second block" }
+			},
+		};
+
 		public bool FileLogging { get; set; } = true;
+
+
+		public string InfoBindIP { get; set; } = "127.0.0.1";
+		public int InfoPort { get; set; } = 12199;
 
 		public string ShipBindIP { get; set; } = "127.0.0.1";
 		public int ShipPort { get; set; } = 12100;
@@ -30,8 +52,29 @@ namespace Polaris.Server.Shared
 		/// Blame SEGA for this design choice
 		/// Every single ship server needs to know about every other one, because the client will randomly ping one of the servers it knows about for info
 		/// I wish I could say this was for the sake of redundancy, but the client doesn't even retry if one is down
+		/// On the bright side, you can technically just have a single InfoServer, and just define it 10 times and it should be OK.
 		/// - Variant
-		public Dictionary<string, string>[] Ships { get; set; } = 
+		/// For reference, the client-side lua is something like:	
+		///	GameServer = {
+		///	  Table = {
+		///		s1 = "Polaris",
+		///	  },
+		///	  Polaris = {
+		///		hostname = "127.0.0.1",
+		///		port = 12100
+		///	  }
+		///	}
+		///
+		///	InfoServer = {
+		///	  Table = {
+		///		s1 = "Polaris",
+		///	  },
+		///	  Polaris = {
+		///		hostname = "127.0.0.1",
+		///		port = 12199
+		///	  }
+		///	}
+		public Dictionary<string, string>[] Ships { get; set; } =
 		{
 			new Dictionary<string, string>()
 			{

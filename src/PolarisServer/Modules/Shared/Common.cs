@@ -2,13 +2,23 @@
 {
     public static class Common
     {
+		public const int MaxBufferSize = 1024;
+
 		public enum ActionType
 		{
+			#region Info
+
+			INF_NEWCONN,
+
+			#endregion Info
+
 			#region Ship
 
-			SHP_NEWCONN,
+			GAM_NEWCONN,
+			GAM_INITHANDSHAKE,
+			GAM_AUTH,
 
-			#endregion Ship
+			#endregion
 
 			#region Logger
 

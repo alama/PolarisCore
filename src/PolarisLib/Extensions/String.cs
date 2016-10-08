@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Polaris.Lib.Extensions
 {
@@ -51,6 +52,13 @@ namespace Polaris.Lib.Extensions
 				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
 
 			return bytes;
+		}
+
+		public static byte[] ToByteArrayUnicode(this string str)
+		{
+			UnicodeEncoding uEncoding = new UnicodeEncoding();
+			byte[] stringContentBytes = uEncoding.GetBytes(str);
+			return stringContentBytes;
 		}
 	}
 }

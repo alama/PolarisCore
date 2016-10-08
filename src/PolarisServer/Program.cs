@@ -23,9 +23,18 @@ namespace Polaris.Server
 			CheckTestConnectAuthDB();
 			Log.Write("Connection to database OK");
 
-			//Setup and start ship
-			Ship.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.Ships);
-			Log.Write($"Listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
+			//Setup and start InfoServer
+			// TODO: Add flag to avoid starting info server (e.g. for hosting a single info server and multiple ships)
+
+			Log.Write("Starting InfoServer...");
+			Info.Instance.Initialize(Config.Instance.InfoBindIP, Config.Instance.InfoPort, Config.Instance.Ships);
+			Log.Write($"InfoServer listening for connections on {Config.Instance.InfoBindIP}:{Config.Instance.InfoPort}...");
+
+			Log.Write("Starting GameServer...");
+			Game.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.Blocks);
+			Log.Write($"GameServer listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
+
+
 			Console.ReadLine();
 		}
 
