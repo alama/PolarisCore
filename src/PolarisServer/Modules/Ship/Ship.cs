@@ -11,29 +11,25 @@ using Polaris.Server.Modules.Shared;
 using static Polaris.Server.Modules.Shared.Common;
 
 
-namespace Polaris.Server.Modules.Listener
+namespace Polaris.Server.Modules.Ship
 {
-	public class Listener : ThreadModule, IDisposable
+	public class Ship : ThreadModule, IDisposable
 	{
 		private TcpListener _listener;
 		private IPAddress _addr;
 		private int _port;
 		private Thread _threadListener;
+
 		private static PacketShipList _shipList;
 
-		public static Listener Instance { get; private set; }
+		public static Ship Instance { get; } = new Ship();
 
-		static Listener()
-		{
-			Instance = new Listener();
-		}
-
-		protected Listener()
+		protected Ship()
 		{
 
 		}
 
-		~Listener()
+		~Ship()
 		{
 			this.Dispose();
 		}
@@ -93,7 +89,7 @@ namespace Polaris.Server.Modules.Listener
 			while (_readyFlag.IsSet)
 			{
 				var client = await _listener.AcceptTcpClientAsync();
-				PushQueue(new ParameterizedAction() { Type = ActionType.LST_NewConnection, Parameters = new object[] { client } });
+				PushQueue(new ParameterizedAction() { Type = ActionType.SHP_NEWCONN, Parameters = new object[] { client } });
 			}
 		}
 
@@ -113,7 +109,7 @@ namespace Polaris.Server.Modules.Listener
 
 				switch (action.Type)
 				{
-					case ActionType.LST_NewConnection:
+					case ActionType.SHP_NEWCONN:
 						{
 							//Send ship list to new connection
 							var client = (TcpClient)action.Parameters[0];

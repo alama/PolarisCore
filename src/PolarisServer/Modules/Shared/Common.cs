@@ -4,11 +4,11 @@
     {
 		public enum ActionType
 		{
-			#region Listener
+			#region Ship
 
-			LST_NewConnection,
+			SHP_NEWCONN,
 
-			#endregion Listener
+			#endregion Ship
 
 			#region Logger
 

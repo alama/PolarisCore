@@ -9,8 +9,7 @@ namespace Polaris.Server.Shared
 	{
 		public static Config Instance { get; set; } = new Config();
 
-		#region Common
-		public string ClientVersion { get; set; } = "4.0402.1";
+		public string ClientVersion { get; set; } = "4.0402.0";
 
 		public string RSAPublicKey { get; set; } = "./key/publicKey.blob"; // File Path
 		public string RSAPrivateKey { get; set; } = "./key/privateKey.blob"; // File Path
@@ -22,38 +21,26 @@ namespace Polaris.Server.Shared
 
 		public int MaxConnections { get; set; } = 1024;
 
-		#endregion
-
-		#region Logging
 		public bool FileLogging { get; set; } = true;
 
-		#endregion
+		public string ShipBindIP { get; set; } = "127.0.0.1";
+		public int ShipPort { get; set; } = 12100;
 
-		#region Listener
-		public string ListenerBindIP { get; set; } = "127.0.0.1";
-		public int ListenerPort { get; set; } = 12100;
-		public bool ListenerEnable { get; set; } = true; //Currently unused, TODO
-
-		#endregion
-
-		#region Auth
+		/// All of the ship information needs to be here, and it should be identical between ships
+		/// Blame SEGA for this design choice
+		/// Every single ship server needs to know about every other one, because the client will randomly ping one of the servers it knows about for info
+		/// I wish I could say this was for the sake of redundancy, but the client doesn't even retry if one is down
+		/// - Variant
 		public Dictionary<string, string>[] Ships { get; set; } = 
 		{
 			new Dictionary<string, string>()
 			{
 				{ "ShipName", "Polaris" },
 				{ "IPAddress", "127.0.0.1" },
-				{ "Port", "12200" },
+				{ "Port", "12100" },
 				{ "Status", "Online" },
 			},
 		};
-
-		#endregion
-
-		#region Game
-
-		#endregion
-
 
 
 		public static void Create(string filename)

@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace Polaris.Server.Modules.Logging
 {
-	public class Log : ThreadModule
+	public class LogModule : ThreadModule
     {
-		public static Log Instance { get; private set; }
+		public static LogModule Instance { get; private set; }
 
-		static Log()
+		static LogModule()
 		{
-			Instance = new Log();
+			Instance = new LogModule();
 		}
 
 		public override void Initialize(params object[] parameters)

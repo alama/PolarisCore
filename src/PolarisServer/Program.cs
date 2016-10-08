@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-using Polaris.Server.Modules.Listener;
+using Polaris.Server.Modules.Ship;
 using Polaris.Server.Modules.Logging;
 using Polaris.Server.Shared;
 
@@ -13,22 +13,21 @@ namespace Polaris.Server
 	{
 		public static void Main(string[] args)
 		{
-			// TODO: For multiple server ships, add a flag to just not start the listener (just Auth/Game/Log are good enough)
 			InitConfig();
-			Log.Instance.Initialize(Config.Instance.FileLogging);
-			Log.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
-			Log.Write("Starting Authentication Server");
-			Log.Write("Loading Configuration from PolarisAuth.json...");
+			LogModule.Instance.Initialize(Config.Instance.FileLogging);
+			LogModule.WriteInfo($"Current directory: {Directory.GetCurrentDirectory()}");
+			LogModule.Write("Starting Authentication Server");
+			LogModule.Write("Loading Configuration from PolarisAuth.json...");
 			WriteHeaderInfo();
-			Log.Write("Checking for RSA Keys...");
+			LogModule.Write("Checking for RSA Keys...");
 			CheckGenerateRSAKeys();
-			Log.Write("Connecting to authentication database...");
+			LogModule.Write("Connecting to authentication database...");
 			CheckTestConnectAuthDB();
-			Log.Write("Authentication Server ready");
+			LogModule.Write("Authentication Server ready");
 
-			//Setup and start listener thread
-			Listener.Instance.Initialize(Config.Instance.ListenerBindIP, Config.Instance.ListenerPort, Config.Instance.Ships);
-			Log.Write($"Listening for connections on {Config.Instance.ListenerBindIP}:{Config.Instance.ListenerPort}...");
+			//Setup and start ship
+			Ship.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.Ships);
+			LogModule.Write($"Listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
 			Console.ReadLine();
 		}
 
@@ -40,7 +39,7 @@ namespace Polaris.Server
 
 			if (!File.Exists(cfgFileName))
 			{
-				Log.WriteWarning("Configuration file did not exist, created default configuration.");
+				LogModule.WriteWarning("Configuration file did not exist, created default configuration.");
 				Config.Create(cfgFileName);
 			}
 			Config.Load(cfgFileName);
@@ -54,7 +53,7 @@ namespace Polaris.Server
 		private static void WriteHeaderInfo()
 		{
 			//TODO: Include version info and other configurations in here
-			Log.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
+			LogModule.WriteInfo($"Client Version: {Config.Instance.ClientVersion}");
 		}
 
 		private static void CheckGenerateRSAKeys()
@@ -68,25 +67,25 @@ namespace Polaris.Server
 			if (!File.Exists(keyPrivate) || !File.Exists(keyPublic))
 			{
 				if (!File.Exists(keyPrivate))
-					Log.WriteWarning($"Could not find existing private key at {keyPrivate}");
+					LogModule.WriteWarning($"Could not find existing private key at {keyPrivate}");
 				if (!File.Exists(keyPublic))
-					Log.WriteWarning($"Could not find existing private key at {keyPublic}");
+					LogModule.WriteWarning($"Could not find existing private key at {keyPublic}");
 
-				Log.WriteInfo("Creating new RSA key pair.");
+				LogModule.WriteInfo("Creating new RSA key pair.");
 				RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider();
 
 				using (FileStream outFile = File.Create(keyPrivate))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(true);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					Log.WriteInfo($"Generated Private Key at {keyPrivate}");
+					LogModule.WriteInfo($"Generated Private Key at {keyPrivate}");
 				}
 
 				using (FileStream outFile = File.Create(keyPublic))
 				{
 					byte[] cspBlob = rcsp.ExportCspBlob(false);
 					outFile.Write(cspBlob, 0, cspBlob.Length);
-					Log.WriteInfo($"Generated Public Key at {keyPublic}");
+					LogModule.WriteInfo($"Generated Public Key at {keyPublic}");
 				}
 			}
 		}

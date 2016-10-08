@@ -9,18 +9,18 @@ namespace Polaris.Server.Modules.Shared
 	public class ThreadModule
     {
 		protected readonly ConcurrentQueue<ParameterizedAction> _queue;
-		protected static ManualResetEventSlim _readyFlag;
-		protected static Thread _thread;
+		protected ManualResetEventSlim _readyFlag;
+		protected Thread _thread;
 
 		static ThreadModule()
 		{
-			_readyFlag = new ManualResetEventSlim();
-			_readyFlag.Reset();
 		}
 
 		protected ThreadModule()
 		{
 			_queue = new ConcurrentQueue<ParameterizedAction>();
+			_readyFlag = new ManualResetEventSlim();
+			_readyFlag.Reset();
 		}
 
 		~ThreadModule()
@@ -28,7 +28,7 @@ namespace Polaris.Server.Modules.Shared
 			_readyFlag.Reset();
 		}
 
-		public static void Stop()
+		public void Stop()
 		{
 			_readyFlag.Reset();
 		}

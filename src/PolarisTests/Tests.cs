@@ -9,7 +9,7 @@ using Xunit;
 using Polaris.Lib.Packet;
 using Polaris.Lib.Packet.Common;
 using Polaris.Lib.Utility;
-using Polaris.Server.Modules.Listener;
+using Polaris.Server.Modules.Ship;
 using System.Runtime.InteropServices;
 using Polaris.Lib.Data;
 using Polaris.Lib.Extensions;
@@ -253,7 +253,7 @@ namespace Tests
 
 			IPAddress addr = new IPAddress(new byte[] { 127, 0, 0, 1});
 
-			Listener.Instance.Initialize(addr.ToString(), 12000, Ships);
+			Ship.Instance.Initialize(addr.ToString(), 12000, Ships);
 
 			int expectedSize = PacketBase.HeaderSize + Marshal.SizeOf<ShipEntry>() * Ships.Length + 12;
 			byte[] buffer = new byte[expectedSize];
@@ -265,7 +265,7 @@ namespace Tests
 				client.Close();
 			}
 
-			Listener.Stop();
+			Ship.Instance.Stop();
 
 			PacketShipList shipList = new PacketShipList(buffer);
 			PacketHeader Header = PacketBase.GeneratePacketHeader((uint)expectedSize, 0x11, 0x3D, 0x04, 0x00);
