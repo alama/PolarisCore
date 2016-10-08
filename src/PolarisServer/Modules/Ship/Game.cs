@@ -29,7 +29,7 @@ namespace Polaris.Server.Modules.Ship
 		private Block[] _blocks;
 		private PacketInitialBlock[] _blockPackets;
 
-		public Block[] Blocks { get { return _blocks; } ; private set { _blocks = value; } }
+		public Block[] Blocks { get { return _blocks; } private set { _blocks = value; } }
 
 
 		protected Game()
