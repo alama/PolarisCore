@@ -68,7 +68,7 @@ namespace Polaris.Server.Modules.Ship
 
 			Parallel.For(0, _blocks.Length, i =>
 				{
-					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)(i+1), _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
+					_blocks[i] = new Block(blockInfo[i]["BlockName"], _shipID, (ushort)(i + 1), _addr, Convert.ToUInt16(blockInfo[i]["Port"]), Convert.ToInt32(blockInfo[i]["Capacity"]), blockInfo[i]["Description"]);
 					_blockPackets[i] = new PacketInitialBlock(0x11, 0x2C);
 					_blockPackets[i].BlockAddress = _addr;
 					_blockPackets[i].BlockPort = _blocks[i].Port;
