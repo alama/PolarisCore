@@ -17,6 +17,8 @@ namespace Polaris.Lib.Packet.Common
 		public virtual uint PKT_SUB { get { return 0; } }
 		public virtual uint PKT_XOR { get { return 0; } }
 
+		public ushort PacketID { get { return (ushort)((Header.type << 8) | Header.subType); } }
+
 		/// For packets that are received
 		public PacketBase(byte[] packet)
 		{
@@ -28,7 +30,7 @@ namespace Polaris.Lib.Packet.Common
 
 			Payload = new byte[Header.size - HeaderSize];
 
-			Array.Copy(packet, HeaderSize, Payload, 0x0, packet.Length - HeaderSize);
+			Array.Copy(packet, HeaderSize, Payload, 0x0, (int)Header.size - HeaderSize);
 		}
 
 		/// For packets to be sent
@@ -104,9 +106,9 @@ namespace Polaris.Lib.Packet.Common
 		}
 
 		/// Get PacketID to use with PacketList
-		public ushort GetPacketID()
+		public static ushort GetPacketID(byte[] packet)
 		{
-			return (ushort)((Header.type << 8) | Header.subType);
+			return (ushort)((packet[4] << 8) | packet[5]);
 		}
 
 	}

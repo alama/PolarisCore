@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net.Sockets;
-
-using static Polaris.Server.Shared.Common;
-
-namespace Polaris.Server.Models
+﻿namespace Polaris.Server.Models
 {
 	public class Player
 	{

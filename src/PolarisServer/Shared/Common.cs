@@ -2,7 +2,7 @@
 {
     public static class Common
     {
-		public const int MaxBufferSize = 1024;
+		public const int MaxBufferSize = 8192;
 
 		public enum ActionType
 		{

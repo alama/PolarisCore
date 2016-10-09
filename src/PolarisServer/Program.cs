@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using Polaris.Server.Modules.Ship;
 using Polaris.Server.Modules.Logging;
 using Polaris.Server.Shared;
-
+using Polaris.Server.Models;
 
 namespace Polaris.Server
 {
@@ -95,6 +95,8 @@ namespace Polaris.Server
 					Log.WriteInfo($"Generated Public Key at {keyPublic}");
 				}
 			}
+
+			Connection.Initialize(keyPrivate);
 		}
 	}
 }

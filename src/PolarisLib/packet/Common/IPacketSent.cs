@@ -1,6 +1,6 @@
 ﻿namespace Polaris.Lib.Packet.Common
 {
-    interface IPacketSent
+    public interface IPacketSent
     {
 		void ConstructPayload();
     }

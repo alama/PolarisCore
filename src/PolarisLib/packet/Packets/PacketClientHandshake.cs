@@ -6,16 +6,17 @@ namespace Polaris.Lib.Packet.Packets
 {
 	public class PacketClientHandshake : PacketBase, IPacketRecv
     {
+		public byte[] Blob { get; private set; }
 
-		public PacketClientHandshake(byte type, byte subType) : base(type, subType)
+		public PacketClientHandshake(byte[] packet) : base(packet)
 		{
-			Header.flag1 = 0x04;
-			Header.flag2 = 0x00;
+			Blob = new byte[0x80];
 		}
 
 		public void ParsePacket()
 		{
-			throw new NotImplementedException();
+			Array.Copy(Payload, 0, Blob, 0, 0x80);
+			Array.Reverse(Blob);
 		}
 
     }
