@@ -16,7 +16,6 @@ namespace Polaris.Server.Modules.Ship
 {
 	public class Game : ThreadModule, IDisposable
 	{
-		private static PacketShipList _shipList;
 		public static Game Instance { get; } = new Game();
 
 		private TcpListener _listener;

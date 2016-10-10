@@ -68,7 +68,7 @@ namespace Polaris.Lib.Utility.Crypto
 			}
 		}
 
-		public new static Rc4 Create()
+		public static Rc4 Create()
 		{
 #if FULL_AOT_RUNTIME
             return new ARC4Managed ();
@@ -77,7 +77,7 @@ namespace Polaris.Lib.Utility.Crypto
 #endif
 		}
 
-		public new static Rc4 Create(string algName)
+		public static Rc4 Create(string algName)
 		{
 			var o = new Arc4Managed();
 			// in case machine.config isn't configured to use 
