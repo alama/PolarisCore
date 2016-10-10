@@ -40,8 +40,7 @@ namespace Polaris.Server.Shared
 		{
 			_thread = new Thread(() => { ProcessThread(); } );
 			_thread.Start();
-			while (!_readyFlag.IsSet)
-				Thread.Sleep(100);
+			_readyFlag.Wait();
 			return;
 		}
 

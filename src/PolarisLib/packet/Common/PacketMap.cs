@@ -15,7 +15,6 @@ namespace Polaris.Lib.Packet.Common
 				{ 0x110B, typeof(PacketClientHandshake) },
 				{ 0x110C, typeof(PacketServerHandshake) },
 				{ 0x1100, typeof(PacketAuth) },
-
 			};
 	}
 }

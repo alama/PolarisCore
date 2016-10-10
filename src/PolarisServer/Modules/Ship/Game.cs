@@ -86,9 +86,7 @@ namespace Polaris.Server.Modules.Ship
 			_threadListener.Start();
 			_thread.Start();
 
-			while (!_readyFlag.IsSet)
-				Thread.Sleep(100);
-
+			_readyFlag.Wait();
 		}
 
 		private async void ListenConnections()
@@ -106,8 +104,7 @@ namespace Polaris.Server.Modules.Ship
 
 		protected override void ProcessThread()
 		{
-			while (!_readyFlag.IsSet)
-				Thread.Sleep(100);
+			_readyFlag.Wait();
 
 			while (_readyFlag.IsSet)
 			{

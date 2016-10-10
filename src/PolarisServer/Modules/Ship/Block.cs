@@ -67,15 +67,12 @@ namespace Polaris.Server.Modules.Ship
 			_helloPacket.ProtocolVersion = 0x03;
 			_helloPacket.ConstructPayload();
 
-			while (!_readyFlag.IsSet)
-				Thread.Sleep(100);
+			_readyFlag.Wait();
 		}
 
 		protected override void ProcessThread()
 		{
-			while (!_readyFlag.IsSet)
-				Thread.Sleep(100);
-
+			_readyFlag.Wait();
 			while (_readyFlag.IsSet)
 			{
 				ParameterizedAction action;
@@ -99,12 +96,15 @@ namespace Polaris.Server.Modules.Ship
 							else
 							{
 								_connections[c].ConnectionID = c;
+								_connections[c].CurrentBlock = this;
 								_connections[c].Listen();
 							}
 						}
 						break;
 					case ActionType.BLK_DISCONN:
 						{
+							var connectionID = (int)action.Parameters[0];
+							_connections.Remove(connectionID);
 						}
 						break;
 					default:
@@ -125,7 +125,5 @@ namespace Polaris.Server.Modules.Ship
 				PushQueue(new ParameterizedAction() { Type = ActionType.BLK_HELLO, Parameters = new object[] { client } });
 			}
 		}
-
-
 	}
 }

@@ -3,9 +3,11 @@ using Polaris.Lib.Packet.Common;
 using Polaris.Lib.Packet.Packets;
 using Polaris.Lib.Utility.Crypto;
 using Polaris.Server.Modules.Logging;
+using Polaris.Server.Modules.Ship;
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Cryptography;
 using static Polaris.Server.Shared.Common;
 
@@ -16,6 +18,7 @@ namespace Polaris.Server.Models
 		private TcpClient _client;
 		private ICryptoTransform _inputArc4 = null, _outputArc4 = null;
 
+		public Block CurrentBlock { get; set; }
 		public int ConnectionID { get; set; }
 		public Player Player { get; set; }
 
@@ -40,6 +43,7 @@ namespace Polaris.Server.Models
 		{
 			_client = c;
 			OnDisconnect += Dispose;
+			OnDisconnect += () => { if (CurrentBlock != null) CurrentBlock.PushQueue(new ParameterizedAction() { Parameters = new object[] { ConnectionID }, Type = ActionType.BLK_DISCONN }); };
 		}
 
 		~Connection()
@@ -49,14 +53,14 @@ namespace Polaris.Server.Models
 
 		public void Dispose()
 		{
-			_client.Close();
+			_client.Close(true);
 		}
 
 		//TODO: I wonder if we could make this async and still behave correctly [Variant]
 		public void SendPacket(PacketBase p)
 		{
 			if (!(p is IPacketSent))
-				throw new Exception($"[Connection { ConnectionID }] Packet { p.PacketID } does not implement IPacketSent");
+				throw new Exception($"Packet { p.PacketID } does not implement IPacketSent");
 
 			((IPacketSent)p).ConstructPayload();
 			byte[] pkt = p.Packet();
@@ -92,7 +96,7 @@ namespace Polaris.Server.Models
 					p.ParsePacket();
 					byte[] decryptBlob = RSACSP.Decrypt(p.Blob, false);
 
-					if(decryptBlob.Length < 0x20)
+					if (decryptBlob.Length < 0x20)
 						throw new Exception($"11.0B Decrypt blob failed");
 
 					var arc4Key = new byte[16];
@@ -132,7 +136,18 @@ namespace Polaris.Server.Models
 					Array.Copy(buffer.Array, pkt, size);
 
 					BeforePacketProcess(pkt, size);
-					//Do things
+
+					ushort ID = PacketBase.GetPacketID(pkt);
+
+					if (!PacketBase.PacketMap.ContainsKey(ID))
+						throw new Exception($"Unknown packet type {ID:X4}");
+
+					if (!typeof(IPacketRecv).IsAssignableFrom(PacketBase.PacketMap[ID]))
+						throw new Exception($"Packet {ID:X4} does not implement IPacketRecv");
+
+					PacketBase p = (PacketBase)Activator.CreateInstance(PacketBase.PacketMap[ID], pkt);
+					((IPacketRecv)p).ParsePacket();
+
 					AfterPacketProcess(pkt, size);
 				}
 			}
@@ -148,7 +163,7 @@ namespace Polaris.Server.Models
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError($"Connection { ConnectionID } ({_client.Client.RemoteEndPoint}) sent : {ex.Message}");
+				Log.WriteError($"[Connection { ConnectionID } ({_client.Client.RemoteEndPoint})] {ex.Message}");
 			}
 			finally
 			{

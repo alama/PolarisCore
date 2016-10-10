@@ -1,6 +1,6 @@
 ﻿namespace Polaris.Lib.Packet.Common
 {
-    interface IPacketRecv
+    public interface IPacketRecv
     {
 		void ParsePacket();
     }

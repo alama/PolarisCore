@@ -7,10 +7,8 @@ namespace Polaris.Lib.Packet.Packets
 	public class PacketAuth : PacketBase, IPacketRecv
     {
 
-		public PacketAuth(byte type, byte subType) : base(type, subType)
+		public PacketAuth(byte[] pkt) : base(pkt)
 		{
-			Header.flag1 = 0x04;
-			Header.flag2 = 0x00;
 		}
 
 		public void ParsePacket()

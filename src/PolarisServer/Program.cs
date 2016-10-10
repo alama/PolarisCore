@@ -6,6 +6,9 @@ using Polaris.Server.Modules.Ship;
 using Polaris.Server.Modules.Logging;
 using Polaris.Server.Shared;
 using Polaris.Server.Models;
+using Polaris.Lib.Packet.Common;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Polaris.Server
 {
@@ -22,6 +25,7 @@ namespace Polaris.Server
 			Log.Write("Connecting to database...");
 			CheckTestConnectAuthDB();
 			Log.Write("Connection to database OK");
+			CheckMisc();
 
 			//Setup and start InfoServer
 			// TODO: Add flag to avoid starting info server (e.g. for hosting a single info server and multiple ships)
@@ -34,11 +38,18 @@ namespace Polaris.Server
 			Game.Instance.Initialize(Config.Instance.ShipBindIP, Config.Instance.ShipPort, Config.Instance.ShipID, Config.Instance.Blocks);
 			Log.Write($"GameServer listening for connections on {Config.Instance.ShipBindIP}:{Config.Instance.ShipPort}...");
 
-
 			Console.ReadLine();
 		}
 
-
+		private static void CheckMisc()
+		{
+			Log.Write("Checking Packet List...");
+			foreach (KeyValuePair<ushort,Type> t in PacketBase.PacketMap)
+			{
+				if (!t.Value.GetTypeInfo().IsSubclassOf(typeof(PacketBase)))
+					Log.WriteError($"Packet {t.Key:X4} points to a non-packet type");
+			}
+		}
 
 		private static void InitConfig()
 		{

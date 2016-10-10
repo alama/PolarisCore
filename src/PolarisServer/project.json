@@ -11,6 +11,7 @@
     },
     "Newtonsoft.Json": "9.0.1",
     "PolarisLib": "*",
+    "System.Net.Sockets": "4.1.0",
     "System.Runtime.Loader": "4.0.0",
     "System.Security.Cryptography.Csp": "4.0.0",
     "System.Security.Cryptography.Pkcs": "4.0.0"
